@@ -9,7 +9,8 @@ profesores corrigen los exámenes respetando el orden en que los alumnos van ent
 Process Alumno[id: 0..P-1]
 { Examen examen;
   int nota;
-  Admin!llegada(1);
+  Admin!llegada();
+  Admin!pedidoEmpezarExamen(id);
   Admin?empezarExamen(examen);
   examen = realizarExamen(examen);
   Admin!entregarExamen(id,examen);
@@ -31,22 +32,22 @@ Process Admin
 { int idA, idP, nota, i = 0;
   Examen examen;
   cola BufferExamen, BufferNotas;
-  while (i<P){
-   Alumno[*]?llegada(ok)
-   i++;
-  }
-  i=0;
-  //llegaron todos los alumnos y se les debe dar el ok para empezar el parcial
-  while (i<P) {
-    Alumno[i]!empezarExamen();
-    i++;
-  }
+
+  //registro de llegada de alumnos
+  do (cantP < P); Alumno[*]?llegada() -> cantP++;
+  od
+
+  //llegaron todos los alumnosn (cantP = P) -> dar el ok para empezar
+  do (cantP > 0); Alumno[*]?pedidoEmpezarExamen(id) -> Alumno[id]!empezarExamen(); cantP--;
+  od
 
   //entrega de examenes y aviso a los profesores de correccion
 
-  do Alumno[*]?entregarExamen(idA, examen) -> push(Buffer,(idA,examen));
-  [] not empty(BufferExamen); Profesor[*]?pedidoExamen(idP) -> pop(BufferExamen,(idA,examen))
+  do (cantP < P); Alumno[*]?entregarExamen(idA, examen) -> push(Buffer,(idA,examen));  cantP++;//quedan alumnos para entregar
+  [] not empty(BufferExamen); Profesor[*]?pedidoExamen(idP) -> pop(BufferExamen,(idA,examen)) //se va a vaciar el Buffer cuando los profesores terminen de corregir a todos
                 Profesor[idP]!recibirExamen(idA, examen);
   od
+
+// esta bien separar el ok del empiezo del examen de la entrega y correccion?
 
 }
