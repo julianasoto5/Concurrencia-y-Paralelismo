@@ -12,8 +12,13 @@ vehículos.
 
 Procedure Puente is
 	Task Admin is 
-		Entry Pasa(Peso: IN integer);
-		Entry Pedido();
+		Entry pedidoAuto();
+		Entry pedidoCamioneta();
+		Entry pedidoCamion();
+		Entry salirAuto();
+		Entry salirCamioneta();
+		Entry salirCamion();
+
 	End Admin;
 	
 	Task Type Auto;
