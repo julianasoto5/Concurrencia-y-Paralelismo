@@ -17,8 +17,28 @@
 
 
 Procedure Clinica is
+  Task Medico is
+    Entry atencionP();
+  End Medico;
 
+  Task Type Enfermera;
+  Task Type Persona;
 
+  enfermeras: array(1..E) of Enfermera;
+  personas: array(1..P) of Persona;
+
+  Task Body Medico is
+  Begin
+
+  End Medico;
+
+  Task Body Persona is
+  Begin
+  End Persona;
+
+  Task Body Enfermera is
+  Begin
+  End Enfermera;
 Begin
   NULL;
 End Clinica;
