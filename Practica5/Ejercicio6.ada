@@ -62,9 +62,9 @@ Procedure Juego is
       Accept llegadaIntegrande(team: IN integer);
     end loop;
 
-    --hay que mandar mensaje de inicio juego; i = 4
+    --hay que mandar mensaje de inicio juego;
     for i in 1..4 loop  
-      Accept empezarJuego(); --manda al que haya hecho el entry call primero en vez de hacerlo por id (evitar demoras?)
+      Accept empezarJuego(); --manda al que haya hecho el entry call primero en vez de hacerlo por id (evitar demoras no?)
     end loop;
 
     --recibe los montos recaudados por cada uno de los integrantes
