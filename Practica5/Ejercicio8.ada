@@ -21,28 +21,26 @@ Procedure Limpieza is
   arregloPersonas: array(1..P) of Persona;
 
   Task Body Empresa is
-  reclamos: array(1..P) of integer;
-  idMax, maxR: integer;
+  	reclamos: array(1..P) of integer;
+	totalReclamos: integer:=0;
   Begin
     for i in 1..P loop
       reclamos(i):= 0;
       arregloPersonas(i).Ident(i);
     end loop;
-    maxR:= 0;
+    
     loop
       SELECT
         Accept hacerReclamo(idP: IN integer; dir: IN texto) do
 					reclamos(idP)+=1;
-					if (reclamos(idP) = 1) --hay que agregarla a la cola
-						push (Casas,(idP,dir));
-          if (reclamos(idP) > max)
-            max:= reclamos(id)
-            idMax:= id;
-          end if;
+					totalReclamos:= totalReclamos+1;
         end hacerReclamo;
 			OR 
-				when (maxR > 0) => Accept obtenerDireccionPersona(idP: OUT integer; direc: OUT direc);
-													 maxR:= 0;
+				when (totalReclamos > 0) => Accept Siguiente(idP: OUT integer) do --entra solo si hay reclamos vigentes (el valor se actualiza dentro)
+											   	idP:= maximo(reclamos); --devuelve la posicion del maximo
+												totalReclamos:= totalReclamos - reclamos(id);
+												reclamos(id):= 0;
+											end Siguiente;
     end loop;
   End Empresa;
 
@@ -51,24 +49,23 @@ Procedure Limpieza is
 		idP: integer;
   Begin
     loop
-			Empresa.obtenerDireccionPersona(idP,direc);
-			recolectarBasura();
-			arregloPersonas(idP).llegue();
-		end loop;
+		Empresa.Siguiente(idP); --esta libre
+		recolectarBasura();
+		arregloPersonas(idP).llegue();
+	end loop;
 
   End Camion;
 
   Task Body Persona is
     id: integer;
-		direc: texto;
     pasoCamion: boolean:= FALSE;
   Begin
     Accept Ident(idP: IN integer) do  
       id:= idP;
     end Ident;
-		direc:= getDireccion();
+	
     while(not (pasoCamion)) loop
-      Empresa.hacerReclamo(id, direc);
+      Empresa.hacerReclamo(id);
       --Espera a lo sumo 15 minutos
       SELECT
         Accept llegue(); --pasa el camion
