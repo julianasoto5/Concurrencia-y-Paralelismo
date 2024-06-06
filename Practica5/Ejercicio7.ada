@@ -15,6 +15,8 @@
 -- de la huella más parecida a test en la BD correspondiente. Maximizar
 -- la concurrencia y no generar demora innecesaria.
 
+
+--" a su vez hay un Especialista que la utiliza indefinidamente" -> quiere decir el especialista deberia saber en cual BD esta ubicada la huella encontrada? (es solo devolver el id del servidor de ultima)
 Procedure Sistema is
   Task Especialista is
     Entry mandarHuella(test: OUT HuellaDactilar);
@@ -24,19 +26,32 @@ Procedure Sistema is
   Task Type Servidor;
   arregloServidores: array(1..8) of Servidor;
 
+  Task Body Servidor is
+    test: HuellaDactilar;
+    codigo,valor: integer;
+  Begin
+    loop  
+      Especialista.mandarHuella(test); --le pide al especialista la huella
+      Buscar(test,codigo,valor); --busca en su BD una huella similar
+      Especialista.recibirResultado(codigo,valor);
+    end loop;
+  End Servidor;
+
+
+
   Task Body Especialista is
     test: HuellaDactilar;
     i, similitud, codigo: integer; --estoy suponiendo que similitud es un valor entre 0 y 10 que dice que tan parecida es (10 igual)
   Begin
     loop
       test:= tomarImagenHuella();
-      i:= 0; --cantidad de servidores que mandaron los resultados de la huella test a analizar
+      i:= 0; --cantidad de servidores que mandaron los resultados del analisis de la huella test
       similitud:= 0;
       while (i < 8) loop
         SELECT
-          Accept mandarHuella(test);
+          Accept mandarHuella(test: OUT HuellaDactilar); --se van a encolar los servidores para recibir la huella
         OR
-          Accept recibirResultado(cod: IN integer; parecido: IN integer) do
+          Accept recibirResultado(cod: IN integer; parecido: IN integer) do --se van a encolar los servidores para mandar los resultados
             if (parecido > similitud) --este calculo de maximo vale la pena hacerlo afuera? deberia guardarme en otras variables los valores recibidos pero libero antes al servidor
               similitud:= parecido;
               codigo:= cod;
@@ -45,9 +60,10 @@ Procedure Sistema is
           end recibirResultado;
         END SELECT; --se queda esperando a que un servidor pida una huella o que le mande el resultado 
       end loop; --hasta no tener todos los resultados no sale
-      --
-            
+      --aca ya sabe cual es la huella mas parecida
+          
     end loop;
   End Especialista;
 Begin
+  NULL;
 End Sistema;
