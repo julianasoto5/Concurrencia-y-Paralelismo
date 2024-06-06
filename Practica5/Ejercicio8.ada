@@ -12,14 +12,18 @@ Procedure Limpieza is
 
   End Persona;
   Task Type Camion;
-
+  Task Admin is
+  End Admin;
   arregloCamiones: array(1..3) of Camion;
   arregloPersonas: array(1..P) of Persona;
 
   Task Body Persona is
-
+    reclamo: texto;
+    pasoCamion: boolean:= FALSE;
   Begin
-    
+    while(not (pasoCamion)) loop
+      reclamo:= reclamo+1;
+    end loop;
   End Persona;
 BEGIN
   NULL;
