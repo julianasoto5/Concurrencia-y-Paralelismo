@@ -88,9 +88,8 @@ Procedure Juego is
   End Equipo;
 
   Task Body Persona is
-    team, i, monto: integer;
+    team, i, monto, winner: integer;
   Begin
-    
     team:= averiguarEquipo();
     arregloEquipos(team).llegadaIntegrante(team); --avisa al equipo que llego (y le dice qué equipo es)
     --espera a que llegue el resto y le den el ok de empezar el juego
@@ -101,7 +100,8 @@ Procedure Juego is
     end loop;
 
     arregloEquipos(team).sumarMonedas(monto); --manda el monto total de las monedas juntadas
-    arregloEquipos(team).ganador(winner: IN integer); --se lo pide al arbitro o al equipo? 
+    arregloEquipos(team).ganador(winner: OUT integer); --se lo pide al arbitro o al equipo? 
+
   End;
 
 
