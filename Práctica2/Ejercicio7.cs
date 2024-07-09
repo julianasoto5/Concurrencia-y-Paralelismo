@@ -31,6 +31,7 @@ Process Empleado[id:0..14]
   //hay que asignarle un grupo
   idG = grupoActual;
   cuposGrupos[idG-1] = cuposGrupos[idG-1]-1;
+  
   if (cuposGrupos[idG-1] == 0){//se lleno el grupo
     grupoActual = grupoActual + 1;
   }
@@ -43,24 +44,17 @@ Process Empleado[id:0..14]
   }
   V(mutex);
 
-  
-  if (cant > 0){
-    //hay lugar en el grupo actual
-    idG = grupoActual; 
-    cant = cant-1;
-  }
-  else { //hay que cambiar de grupo
-    grupoActual = grupoActual+1;
-    idG = grupoActual;
-    cant = 3;
-  }
-  V(mutexCant);
   //comienza a trabajar una vez que sabe su grupo
-  
-  while(cantProd[idG] != 0){
-  
-    P(trabajo[idG]);
+  P(mutexCantProd[idG]); //para que entre de a uno 
+  while(cantProd[idG] > 0){
     hacerUnidad();
-    V(trabajo[idG]);
+    cantP[idG] = cantP[idG]-1;
+    V(mutexCantProd[idG]); //desocupa el recurso
+    P(mutexCantProd[idG]); //se queda esperando a que se desocupe el recurso
   }
+  V(mutexCantProd[idG]); //sino se quedan bloqueados
+
+  //SE VAN
+
+  
 }
