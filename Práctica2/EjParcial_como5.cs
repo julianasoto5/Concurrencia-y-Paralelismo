@@ -55,7 +55,7 @@ Process Repositor
 {
  while (true){
    P(aviso); //<await (s>0); s=s-1 > --> alguien tiene que hacer V(aviso) --> usuario 101
-   reponerLatas();
+   cantLatas = 100;
    V(listo); //le avisa al usuario que lo encontro vacio que ahora puede agarrar
  } 
 }
