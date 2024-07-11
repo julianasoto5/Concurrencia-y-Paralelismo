@@ -13,7 +13,8 @@ Monitor Admin{
   cola fila;
   cond prof;
   int profAsignado[N];
-  int cantAlumnos = 0;
+  int cantAlumnos = 0, esperando = 0;
+  boolean final = false;
   
   Procedure Llegada(idA: IN int; idP: OUT int){
     push(fila,idA);
@@ -22,13 +23,24 @@ Monitor Admin{
     idP = profAsignado[idA];
   }
 
-  Procedure Siguiente(idP: IN int; idA: OUT int; fin: OUT boolean){
-    while (empty(fila))  wait(prof);
-    cantAlumnos++;
-    pop(fila, idA);
-    profAsignado[idA] = idP;
-    signal(espera[idA]);
+  Procedure Siguiente(idP: IN int; idA: OUT int){
+    esperando++;
+    while (empty(fila)) wait(prof);
+    esperando--;
+    if (cantAlumnos < 30){
+      cantAlumnos++;
+      pop(fila, idA);
+      profAsignado[idA] = idP;
+      signal(espera[idA]);
+    }
+  }
+
+  Procedure Seguir(fin: OUT boolean){ 
     fin = (cantAlumnos == 30);
+    if (fin){ 
+      for i in 1..esperando
+        signal(prof); //despierto a los que se quedaron dormidos
+    }
   }
 }
 
@@ -69,11 +81,12 @@ Process Alumno[id:0..29]
 }
 Process Profesor[id:0..2]
 { boolean fin = false; int idA, nota; text: examen; 
-  do
-    Admin.Siguiente(id, idA, fin);
+  while (!fin){
+    Admin.Siguiente(id, idA);
     Desk[id].EsperarExamen(examen);
     nota = Corregir(examen);
     Desk[id].MandarNota(idA, nota);
-  until (fin);
+    Admin.Seguir(fin);
+  }
 
 }
