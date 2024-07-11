@@ -10,30 +10,39 @@ deben terminar su ejecución.
 
 Monitor Admin{
   //se va a encargar de coordinar un alumno con un profesor
-  cola prof, fila;
+  cola fila;
+  cond prof;
+  int profAsignado[N];
   int idAlumno;
-  Procedure Llegada(idA: IN int){
+  
+  Procedure Llegada(idA: IN int; idP: OUT int){
     push(fila,idA);
+    signal(prof);
     wait(espera[idA]);
+    idP = profAsignado[idA];
   }
 
   Procedure Siguiente(idP: IN int; idA: OUT int){
-    if (empty(fila))  wait(prof);
-    
-    
+    while (empty(fila))  wait(prof);
+    pop(fila, idA);
+    profAsignado[idA] = idP;
+    signal(espera[idA]);
   }
 }
 
-Monitor Desk{
+Monitor Desk[id:0..2]{
   //se va a encargar de la interacción alumno-profesor
   
 }
 Process Alumno[id:0..29]
-{
-  Admin.Llegada();
+{ int idP, nota;
+  Admin.Llegada(id, idP);
+  Desk[idP].hacerExamen(nota);
+  
 
 }
 Process Profesor[id:0..2]
 {
+
 
 }
