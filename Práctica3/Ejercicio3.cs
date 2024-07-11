@@ -8,14 +8,14 @@ a que el empleado le entregue el comprobante de la compra realizada.
 Monitor Admin{
     cola fila;
     cond empleado;
-    cond espera[N];
+    cond espera;
     text lista, comprobantes[N];
     int idPersona;
 
     Procedure Comprar(idP: IN int; l: IN text; comp: OUT text){
       push(fila, (idP, l));
       signal(empleado);
-      wait(espera[idP]);
+      wait(espera);
       comp = comprobantes[idP];
     }
 
@@ -26,7 +26,7 @@ Monitor Admin{
 
     Procedure Resultado(idP: IN int; comp: IN text){
       comprobantes[idP] = comp;
-      signal(espera[idP]);
+      signal(espera);
     }
 }
 
