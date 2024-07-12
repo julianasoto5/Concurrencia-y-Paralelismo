@@ -10,9 +10,7 @@ cola buffer;
 int s = 5;
 Process Proceso[id:0..P-1]
 { int idI;
-  <await s > 0; s=s-1>>; //equivalente a P(s);
-  <pop(buffer,idI)>;
+  <await s > 0; pop(buffer,idI); s=s-1;>; //equivalente a P(s);
   usarInstancia(idI);
-  <s=s+1>; //
-  
+  <push(buffer, idI); s = s+1;>; 
 }
