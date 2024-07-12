@@ -87,7 +87,7 @@ Monitor Estacion[id:1..5]
   }
 
   Procedure Atender(next: OUT int);{
-    wait(aviso);
+    if (empty(fila)) wait(aviso);
     pop(fila, next);
   }
 
