@@ -13,14 +13,14 @@ empleado le cobra al cliente.
 //hay dos ordenes: el de llegada para la seleccion de las cabinas y otro del pago de acuerdo a cuando termines de usar la cabina 
 //tienen prioridad de la atencion del empleado los que terminaron de usar la cabina antes que los que llegan
 
-chan Llegadas [N](int); // para cuando lleguen los clientes
-chan FilaPagar [N](int); //para cuando terminen de usar la cabina
+chan Llegadas(int); // para cuando lleguen los clientes
+chan FilaPagar(int); //para cuando terminen de usar la cabina
 chan OcuparCabina[N](int); //para que el empleado le avise al cliente que cabina usar
 chan CabinasDisponibles(int);  //el empleado carga los 10 ids antes de empezar a atender
-chan ChequeoPago[N](int); //el empleado le avisa que ya realizo el pago
+chan ChequeoPago[N](Ticket); //el empleado le avisa que ya realizo el pago
 
 Process Cliente[id: 0..N-1]
-{ int idCabina, ok;
+{ int idCabina; Ticket ticket;
   while (true){
     // Avisa que llego
     send Llegadas(id);
@@ -36,7 +36,7 @@ Process Cliente[id: 0..N-1]
     
     
     // Espera para pagar al empleado
-    receive chequeoPago(ok);
+    receive chequeoPago[id](ticket);
 
     //termina
   }
@@ -45,6 +45,7 @@ Process Cliente[id: 0..N-1]
 
 Process Empleado
 {  int idC1,idC2, idCabina;
+
 
   //carga de las cabinas
   for (i = 0..9){
@@ -56,9 +57,9 @@ Process Empleado
     if (not empty (FilaPagar))->
         receive FilaPagar (idC2);
         Cobrar();
-        send chequeoPago(1);
+        send chequeoPago[idC2](1);
       
-   []if ((not empty (CabinasDisponibles)) and (empty(FilaPagar)))-> //si hay cabinas disponibles puede asignar a alguien y no hay nadie para pagar
+   []if ((not empty (CabinasDisponibles)) and (not empty (Llegadas)) and (empty(FilaPagar)))-> //si hay cabinas disponibles puede asignar a alguien y no hay nadie para pagar
       receive CabinasDisponibles(idCabina);  //recibe el id de una cabina disponible
       receive Llegadas(idC1); //recibe el id de la persona a ubicar en la cabina - seguro que no esta vacio porq alguien envio el Aviso    
       send OcuparCabina[idC1](idCabina);
