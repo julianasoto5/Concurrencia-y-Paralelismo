@@ -38,10 +38,12 @@ Procedure Puente is
 			        			total--;
 			                            End pedidoAuto();
 			        End when;
+			OR
 			        when (total >= 2) => Accept pedidoCamioneta() do // si hay dos unidades libres, permite el paso de la camioneta (y la otra condicion tambien da verdadero)
 			        			total:= total-2;
 			                            End pedidoCamioneta();
 			        End when;
+			OR
 			        when (total >= 3) => Accept pedidoCamion() do // si hay tres unidades libres, permite el paso del camion (y las otras dos condiciones tambien dan verdadero)
 			        			total:= total-3;
 			                            End pedidoCamion();
@@ -49,17 +51,17 @@ Procedure Puente is
       
 			
 			OR
-					accept SalirAuto() is
-						total := total + 1;
-					end SalirAuto;
+				accept SalirAuto() is
+					total := total + 1;
+				end SalirAuto;
 			OR
-					accept SalirCamioneta() is
-						total := total + 2;
-					end SalirCamioneta;
+				accept SalirCamioneta() is
+					total := total + 2;
+				end SalirCamioneta;
 			OR
-					accept SalirCamion() is
-						total := total + 3;
-					end SalirCamion;
+				accept SalirCamion() is
+					total := total + 3;
+				end SalirCamion;
 			END SELECT;
 
 		End loop;
