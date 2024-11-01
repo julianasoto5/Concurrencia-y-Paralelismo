@@ -30,21 +30,21 @@ Procedure Puente is
 	arregloCamiones: array (1..C) of Camion;
 	
 	Task Body Admin is
-		total:integer:=5;
+		total:integer:=0;
 	Begin
 		loop
 			SELECT
-			      	when (total >= 1) => Accept pedidoAuto() do // si hay al menos una unidad libre, permite el paso del auto.
+			      	when (total <= 4) AND (pedidoCamion'count==0) => Accept pedidoAuto() do // si hay al menos una unidad libre, permite el paso del auto.
 			        			total--;
 			                            End pedidoAuto();
 			        End when;
 			OR
-			        when (total >= 2) => Accept pedidoCamioneta() do // si hay dos unidades libres, permite el paso de la camioneta (y la otra condicion tambien da verdadero)
+			        when (total <= 3) AND (pedidoCamion'count==0) => Accept pedidoCamioneta() do // si hay dos unidades libres, permite el paso de la camioneta (y la otra condicion tambien da verdadero)
 			        			total:= total-2;
 			                            End pedidoCamioneta();
 			        End when;
 			OR
-			        when (total >= 3) => Accept pedidoCamion() do // si hay tres unidades libres, permite el paso del camion (y las otras dos condiciones tambien dan verdadero)
+			        when (total <= 2) AND (pedidoCamion'count>0) => Accept pedidoCamion() do // si hay tres unidades libres, permite el paso del camion (y las otras dos condiciones tambien dan verdadero)
 			        			total:= total-3;
 			                            End pedidoCamion();
 			        End when;
@@ -88,4 +88,4 @@ Procedure Puente is
 		pasarPuente();
 		Admin.salirCamion();
   	End Camion;		
-End Puente;
+End Puente
