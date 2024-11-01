@@ -34,29 +34,29 @@ Procedure Puente is
 	Begin
 		loop
 			SELECT
-      	when (total >= 1) => Accept pedidoAuto() do // si hay al menos una unidad libre, permite el paso del auto.
-        											total--;
-                            End pedidoAuto();
-        End when;
-        when (total >= 2) => Accept pedidoCamioneta() do // si hay dos unidades libres, permite el paso de la camioneta (y la otra condicion tambien da verdadero)
-        											total:= total-2;
-                            End pedidoCamioneta();
-        End when;
-        when (total >= 3) => Accept pedidoCamion() do // si hay tres unidades libres, permite el paso del camion (y las otras dos condiciones tambien dan verdadero)
-        											total:= total-3;
-                            End pedidoCamion();
-        End when;
+			      	when (total >= 1) => Accept pedidoAuto() do // si hay al menos una unidad libre, permite el paso del auto.
+			        			total--;
+			                            End pedidoAuto();
+			        End when;
+			        when (total >= 2) => Accept pedidoCamioneta() do // si hay dos unidades libres, permite el paso de la camioneta (y la otra condicion tambien da verdadero)
+			        			total:= total-2;
+			                            End pedidoCamioneta();
+			        End when;
+			        when (total >= 3) => Accept pedidoCamion() do // si hay tres unidades libres, permite el paso del camion (y las otras dos condiciones tambien dan verdadero)
+			        			total:= total-3;
+			                            End pedidoCamion();
+			        End when;
       
 			
-				OR
+			OR
 					accept SalirAuto() is
 						total := total + 1;
 					end SalirAuto;
-				OR
+			OR
 					accept SalirCamioneta() is
 						total := total + 2;
 					end SalirCamioneta;
-				OR
+			OR
 					accept SalirCamion() is
 						total := total + 3;
 					end SalirCamion;
@@ -69,21 +69,21 @@ Procedure Puente is
 	Task Body Auto is
 	Begin
 		Admin.pedidoAuto();
-    pasarPuente();
-    Admin.salirAuto();
-  End Auto;
+		pasarPuente();
+		Admin.salirAuto();
+  	End Auto;
   			
 	Task Body Camioneta is
 	Begin
 		Admin.pedidoCamioneta();
-    pasarPuente();
-    Admin.salirCamioneta();
-  End Camioneta;			
+    		pasarPuente();
+    		Admin.salirCamioneta();
+  	End Camioneta;			
 	
-  Task Body Camion is
+ 	Task Body Camion is
 	Begin
 		Admin.pedidoCamion();
-    pasarPuente();
-    Admin.salirCamion();
-  End Camion;		
+		pasarPuente();
+		Admin.salirCamion();
+  	End Camion;		
 End Puente;
