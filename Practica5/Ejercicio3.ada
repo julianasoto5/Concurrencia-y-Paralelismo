@@ -42,6 +42,7 @@ PROCEDURE Sistema IS
       OR 
         Accept Signal2(senial: IN Signal) do
           procesarSignal(senial);
+        end Signal2;
           Timer.Iniciar(180);
           while (FinTimer'count = 0) loop //todavia no se encolo el fin del timer
               Accept Signal2(senial:IN Signal) do
@@ -49,7 +50,6 @@ PROCEDURE Sistema IS
               end Signal2;
           end loop; //sale del loop cuando termina el tiempo (es decir, hay un entry call en el fin del timer)
           Accept FinTimer(); //desencola el FinTimer
-        end Signal2;
       END SELECT;
     end loop;
     
